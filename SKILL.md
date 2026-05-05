@@ -84,20 +84,32 @@ description: >-
 - **截图**: @2x 高清（实际输出 2160×2700px）
 - **格式**: HTML 源文件 + PNG 截图
 
-### 三张图的设计系统
+### 三张图的设计系统（统一黑底）
 
-| 平台 | 背景 | 主色 | 风格关键词 |
-|------|------|------|-----------|
-| GitHub | `#0d1117` 深黑 | `#3fb950` 绿 | 终端感、JetBrains Mono、数据密集 |
-| Product Hunt | `#faf8f5` 暖白 | `#ff6154` 珊瑚 | 卡片式、温暖、产品导向 |
-| App Store | `#000000` 纯黑 | `#0a84ff` 蓝 | Apple 风格、克制、高对比 |
+所有图片使用 **同一背景色 `#0d1117`**，通过各自的强调色区分平台身份：
+
+| 平台 | 背景 | 强调色 | 数据标注色 | 风格关键词 |
+|------|------|--------|-----------|-----------|
+| GitHub | `#0d1117` | `#3fb950` 绿 | `#58a6ff` 蓝（repo名） | 终端感、星标增长 |
+| Product Hunt | `#0d1117` | `#ff6154` 珊瑚 | `#ff6154`（upvote数） | Upvote 排行 |
+| App Store | `#0d1117` | `#0a84ff` 蓝 | `#0a84ff`（排名变动） | 排名飙升 |
+
+**统一结构**:
+- Container: `padding: 56px 48px 44px`
+- Item grid: `32px 1fr auto`，`gap: 2px`
+- Top 3 条目：accent 色高亮背景 + 边框
+- 排名编号：`JetBrains Mono`，top 3 用强调色，其余 `#484f58`
+- 文字层级：名称 14px/600 白色 → 描述 12px `#7d8590` → 分类 11px `#484f58`
 
 ### 设计原则（继承 huashu-design 反 AI slop）
 
 - 不用紫色渐变、emoji 图标、圆角+左 border accent
-- 字体：`Inter`（正文）+ `JetBrains Mono`（数据/代码）
-- 每张图底部加「趋势洞察」一句话摘要
-- Footer 包含数据来源和用户 @handle 占位
+- 字体：`Inter`（正文）+ `JetBrains Mono`（数据/排名/代码）
+- 每张图底部加「趋势洞察」一句话摘要（accent 色标签 + 灰色文字）
+- Footer 包含数据来源和日期，布局 `justify-content: space-between`
+- 所有图统一 `#0d1117` 背景，不做渐变，保持纯净暗色
+- Top 3 条目使用 accent 色 4% 透明度背景 + 12% 透明度边框
+- 其余条目使用白色 2% 透明度背景 + 4% 透明度边框
 
 ### HTML 模板结构
 
@@ -108,20 +120,38 @@ description: >-
   <meta charset="UTF-8">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body { width: 1080px; height: 1350px; overflow: hidden; }
-    /* 平台对应配色 */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 1080px; height: 1350px; background: #0d1117; font-family: 'Inter', -apple-system, sans-serif; color: #e6edf3; overflow: hidden; }
+    .container { width: 100%; height: 100%; padding: 56px 48px 44px; display: flex; flex-direction: column; }
+    .header { margin-bottom: 36px; }
+    .header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .header-label { font-size: 13px; font-weight: 600; color: VAR_ACCENT; letter-spacing: 0.08em; text-transform: uppercase; }
+    .header-title { font-size: 32px; font-weight: 800; color: #ffffff; letter-spacing: -0.03em; }
+    .header-date { font-size: 13px; color: #484f58; margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
+    .list { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .item { display: grid; grid-template-columns: 32px 1fr auto; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+    .item:nth-child(-n+3) { background: rgba(VAR_ACCENT_RGB, 0.04); border-color: rgba(VAR_ACCENT_RGB, 0.12); }
+    .rank { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; color: #484f58; text-align: center; }
+    .item:nth-child(-n+3) .rank { color: VAR_ACCENT; }
+    .insight { margin-top: 18px; padding: 12px 16px; background: rgba(VAR_ACCENT_RGB, 0.04); border-radius: 8px; border: 1px solid rgba(VAR_ACCENT_RGB, 0.1); display: flex; align-items: center; gap: 12px; }
+    .footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header"><!-- 平台 logo + 标题 + 日期 --></div>
-    <div class="list"><!-- 排行列表 --></div>
-    <div class="insight"><!-- 趋势洞察 --></div>
-    <div class="footer"><!-- 来源 + handle --></div>
+    <div class="header"><!-- 平台 icon + label + 标题 + 日期 --></div>
+    <div class="list"><!-- 10 条排行条目 --></div>
+    <div class="insight"><!-- 趋势洞察标签 + 文字 --></div>
+    <div class="footer"><!-- 数据来源 + 日期 --></div>
   </div>
 </body>
 </html>
 ```
+
+其中 `VAR_ACCENT` 和 `VAR_ACCENT_RGB` 根据平台替换：
+- GitHub: `#3fb950` / `63, 185, 80`
+- Product Hunt: `#ff6154` / `255, 97, 84`
+- App Store: `#0a84ff` / `10, 132, 255`
 
 ## 截图脚本
 
