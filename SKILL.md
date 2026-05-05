@@ -178,13 +178,17 @@ node screenshot.js
     ↓
 整理数据：翻译、归类、排序
     ↓
-生成三个 HTML 文件（按设计规范）
+生成四个 HTML 文件：
+  ├── github-trending.html（单图）
+  ├── producthunt-trending.html（单图）
+  ├── appstore-trending.html（单图）
+  └── combined-trending.html（三合一长图）
     ↓
-运行 screenshot.js 导出 PNG
+运行 screenshot.js 导出 4 张 PNG
     ↓
 输出 ~140 字趋势点评文本
     ↓
-交付：文件路径 + 图片 + 点评文案
+交付：4 张图文件路径 + 点评文案
 ```
 
 ### Step 1: 确认参数
@@ -211,13 +215,35 @@ node screenshot.js
 - 产品名不翻译
 - 描述翻译力求简洁，一行以内
 
-### Step 4: 生成 HTML
+### Step 4: 生成 HTML（4 个文件）
 
-用对应平台的设计模板填充数据，写入文件。
+用对应平台的设计模板填充数据，写入以下文件：
 
-### Step 5: 导出 PNG
+1. **`github-trending.html`** — GitHub 星标增长 Top 10 单图（1080×1350px）
+2. **`producthunt-trending.html`** — Product Hunt Upvote Top 10 单图（1080×1350px）
+3. **`appstore-trending.html`** — App Store 排名飙升 Top 10 单图（1080×1350px）
+4. **`combined-trending.html`** — 三合一长图（1080px 宽，高度自适应）
 
-运行截图脚本。如沙箱限制无法启动浏览器，输出脚本路径让用户自行运行。
+合并长图结构：
+```
+┌─────────────────────────┐
+│  GitHub 星标增长 Top 10   │ ← section-gh（绿色）
+├─────────────────────────┤
+│  PH Upvote Top 10       │ ← section-ph（珊瑚色）
+├─────────────────────────┤
+│  App Store 飙升 Top 10   │ ← section-as（蓝色）
+├─────────────────────────┤
+│  Footer（日期 + 数据源）  │
+└─────────────────────────┘
+```
+
+每个 section 使用 `.section + .section { border-top: 1px solid rgba(255,255,255,0.06) }` 分隔，各自保留 insight 洞察。
+
+### Step 5: 导出 PNG（4 张）
+
+运行截图脚本导出 4 张图。单图使用固定 1080×1350 viewport，合并长图使用 `fullPage: true` 自适应高度。
+
+如沙箱限制无法启动浏览器，输出脚本路径让用户自行运行。
 
 ### Step 6: 趋势点评（文本输出）
 

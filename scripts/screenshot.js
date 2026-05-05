@@ -50,12 +50,22 @@ function findChrome() {
   for (const file of htmlFiles) {
     const htmlPath = path.resolve(TARGET_DIR, file);
     const pngPath = htmlPath.replace(/\.html$/, '.png');
+    const isCombined = file.includes('combined');
 
-    await page.goto(`file://${htmlPath}`, { waitUntil: 'networkidle0', timeout: 15000 });
-    await page.screenshot({ path: pngPath });
-
-    const name = path.basename(pngPath);
-    console.log(`✓ ${name} (${VIEWPORT.width * VIEWPORT.deviceScaleFactor}×${VIEWPORT.height * VIEWPORT.deviceScaleFactor}px @${VIEWPORT.deviceScaleFactor}x)`);
+    if (isCombined) {
+      await page.setViewport({ width: 1080, height: 800, deviceScaleFactor: 2 });
+      await page.goto(`file://${htmlPath}`, { waitUntil: 'networkidle0', timeout: 15000 });
+      const bodyHeight = await page.evaluate(() => document.body.scrollHeight);
+      await page.setViewport({ width: 1080, height: bodyHeight, deviceScaleFactor: 2 });
+      await page.goto(`file://${htmlPath}`, { waitUntil: 'networkidle0', timeout: 15000 });
+      await page.screenshot({ path: pngPath, fullPage: true });
+      console.log(`✓ ${path.basename(pngPath)} (${1080 * 2}×${bodyHeight * 2}px @2x · 长图)`);
+    } else {
+      await page.setViewport(VIEWPORT);
+      await page.goto(`file://${htmlPath}`, { waitUntil: 'networkidle0', timeout: 15000 });
+      await page.screenshot({ path: pngPath });
+      console.log(`✓ ${path.basename(pngPath)} (${VIEWPORT.width * 2}×${VIEWPORT.height * 2}px @2x)`);
+    }
   }
 
   await browser.close();
