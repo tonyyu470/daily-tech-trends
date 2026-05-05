@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Daily Trending</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  width: 1080px;
+  height: 1350px;
+  background: #0d1117;
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: #e6edf3;
+  overflow: hidden;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  padding: 64px 56px 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+.header { margin-bottom: 40px; }
+
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.github-mark { width: 36px; height: 36px; fill: #e6edf3; }
+
+.header-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #7d8590;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.header-title {
+  font-size: 38px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.header-date {
+  font-size: 15px;
+  color: #7d8590;
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.list { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+
+.item {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  background: rgba(22, 27, 34, 0.6);
+  border: 1px solid rgba(48, 54, 61, 0.4);
+}
+
+.item:nth-child(-n+3) {
+  background: rgba(35, 134, 54, 0.08);
+  border-color: rgba(35, 134, 54, 0.2);
+}
+
+.rank {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  font-weight: 600;
+  color: #7d8590;
+  text-align: center;
+}
+
+.item:nth-child(-n+3) .rank { color: #3fb950; }
+
+.info { min-width: 0; }
+
+.repo-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #58a6ff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.repo-desc {
+  font-size: 12.5px;
+  color: #8b949e;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+}
+
+.stats { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; white-space: nowrap; }
+
+.stars-today {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #3fb950;
+}
+
+.stars-total {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #7d8590;
+}
+
+.insight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 12px 16px;
+  background: rgba(35, 134, 54, 0.06);
+  border-radius: 8px;
+  border: 1px solid rgba(35, 134, 54, 0.15);
+}
+
+.insight-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: #3fb950;
+  background: rgba(35, 134, 54, 0.15);
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.insight-text { font-size: 13px; color: #8b949e; }
+
+.footer {
+  margin-top: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(48, 54, 61, 0.6);
+}
+
+.footer-note, .footer-source {
+  font-size: 12px;
+  color: #484f58;
+  font-family: 'JetBrains Mono', monospace;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-top">
+      <svg class="github-mark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      <span class="header-label">Daily Trending</span>
+    </div>
+    <h1 class="header-title">GitHub 每日星标增长 Top 10</h1>
+    <p class="header-date">{{DATE}} · github.com/trending</p>
+  </div>
+
+  <div class="list">
+    <!-- {{ITEMS}} -->
+    <!-- 模板行：
+    <div class="item">
+      <span class="rank">01</span>
+      <div class="info">
+        <div class="repo-name">owner/repo</div>
+        <div class="repo-desc">中文描述</div>
+      </div>
+      <div class="stats">
+        <span class="stars-today">+N,NNN ★</span>
+        <span class="stars-total">NK total</span>
+      </div>
+    </div>
+    -->
+  </div>
+
+  <div class="insight">
+    <span class="insight-tag">趋势洞察</span>
+    <span class="insight-text">{{INSIGHT}}</span>
+  </div>
+
+  <div class="footer">
+    <span class="footer-note">data: github.com/trending · daily</span>
+    <span class="footer-source">{{HANDLE}}</span>
+  </div>
+</div>
+</body>
+</html>
